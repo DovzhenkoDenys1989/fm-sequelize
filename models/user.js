@@ -1,5 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
+const { isAfter } = require('date-fns');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -8,7 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate (models) {
-      // define association here
+      User.hasMany(models.Task, {
+        foreignKey: 'userId',
+      });
     }
   }
   User.init(
@@ -33,6 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       email: {
         allowNull: false,
+        unique: true,
         type: DataTypes.STRING,
         validate: {
           notNull: true,
@@ -46,6 +50,14 @@ module.exports = (sequelize, DataTypes) => {
       },
       birthday: {
         type: DataTypes.DATEONLY,
+        validate: {
+          isDate: true,
+          isValidDate (value) {
+            if (isAfter(new Date(value), new Date())) {
+              throw new Error('Check your birthday, man');
+            }
+          },
+        },
       },
       isMale: {
         field: 'is_male',
@@ -55,6 +67,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'User',
+      tableName: 'users',
+      underscored: true,
     }
   );
   return User;
