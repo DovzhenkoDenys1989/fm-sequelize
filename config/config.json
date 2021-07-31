@@ -4,7 +4,9 @@
     "password": "19sep1959",
     "database": "fm_sequelize",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "seederStorage": "json",
+    "migrationStorage": "json"
   },
   "test": {},
   "production": {}
